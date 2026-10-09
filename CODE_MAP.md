@@ -1,7 +1,7 @@
 # 코드 지도 (인수인계 메모)
 
 이 프로젝트를 직접 분석하고 변형하기 위한 메모입니다. 공개용 요약(README.md)·상세 보고서(REPORT.md)와는 별개입니다.
-작성 기준일: 2026-10-07. 최종 갱신: 2026-10-08 (시드 10개·BSD100·02b/10~14번 스크립트 반영, 공개 저장소 기준으로 정리).
+작성 기준일: 2026-10-07. 최종 갱신: 2026-10-08 (시드 10개·BSD100·02b/10\~14번 스크립트 반영, 공개 저장소 기준으로 정리).
 코드 작성과 실험 실행·분석은 Claude(AI)가 했고, 아래 "누가 정했나" 절과 EXPERIMENT_LOG.md에 결정 주체를 구분해 두었습니다.
 
 ## 1. 데이터가 흐르는 길
@@ -13,8 +13,8 @@
       -> [03]  시드별 A/B/C 그룹 (각 N=1000)  outputs/exp/<실험>/groups_seed{시드}.npz + split_info.txt   (패치 번호 배열)
       -> [07]  조건x시드별 SRCNN 학습          outputs/exp/<실험>/models/srcnn_{A,B,C}_seed{시드}.pt (+ tee로 남긴 train_{조건}{시드}.log)
       -> [08]  평가                            탐색: Set5/Set14 -> results.csv / final: Set5/Set14 + BSD100 -> results_final.csv
-      -> [10]~[14] 분석                        짝 비교·신뢰구간(10, 11), 시각 비교(12), 그룹 점검(13), 경계 세기(14)
-    시드: 탐색은 0~2(cfg.SEEDS), 최종 확인은 0~9(cfg.FINAL_SEEDS, 03/08/10에 final 인자).
+      -> [10]\~[14] 분석                        짝 비교·신뢰구간(10, 11), 시각 비교(12), 그룹 점검(13), 경계 세기(14)
+    시드: 탐색은 0\~2(cfg.SEEDS), 최종 확인은 0\~9(cfg.FINAL_SEEDS, 03/08/10에 final 인자).
     풀·점수(01, 02, 02b)는 모든 실험이 공유하고, 03 이후만 실험별 폴더(outputs/exp/<실험>/)에 저장된다.
     기준 실험 이름은 baseline. 새 실험의 A는 baseline의 A 모델을 재사용한다(03이 A 동일성을 점검).
     outputs/ 바로 아래의 groups_seed*.npz, results.csv, train_*.log는 경로 분리 전 원본이다. outputs/exp/baseline/의 파일과
@@ -58,7 +58,7 @@
 | 손실, 학습 설정 | 07의 `loss_fn`, config.py의 EPOCHS/LR/BATCH_SIZE/AUGMENT | 3조건에서 반드시 동일하게 |
 | 평가 방식 | 08의 `measure` | 문헌 수치와 비교하려면 방식(Y채널, 4px 제외)을 맞춰야 함 |
 
-바꾼 뒤 재실행 범위: 01을 바꾸면 01~, 02를 바꾸면 02~, 03을 바꾸면 03~, 학습 관련을 바꾸면 07~(9번).
+바꾼 뒤 재실행 범위: 01을 바꾸면 01\~, 02를 바꾸면 02\~, 03을 바꾸면 03\~, 학습 관련을 바꾸면 07\~(9번).
 
 ## 4. 누가 정했나 (README의 "내가 내린 결정"에 쓸 때 구분하세요)
 
@@ -107,7 +107,7 @@
     python 10_paired_compare.py myexp
 
     최종 후보 확인 (시드 10개, 사전에 판단 규칙을 EXPERIMENT_LOG에 적은 뒤):
-    python 03_make_groups.py baseline final ; python 03_make_groups.py myexp final      # 시드 3~9 그룹 추가 (0~2는 검증만)
+    python 03_make_groups.py baseline final ; python 03_make_groups.py myexp final      # 시드 3\~9 그룹 추가 (0\~2는 검증만)
     for s in 3 4 5 6 7 8 9; do python -u 07_train.py A $s baseline | tee outputs/exp/baseline/train_A${s}.log; done   # A 확장은 처음 한 번만
     for s in 3 4 5 6 7 8 9; do python -u 07_train.py B $s myexp | tee outputs/exp/myexp/train_B${s}.log; done
     python 08_evaluate.py myexp final ; python 10_paired_compare.py myexp final         # results_final.csv, 시드 단위 95% 신뢰구간
