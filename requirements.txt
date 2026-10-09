@@ -1,0 +1,10 @@
+# 이 프로젝트가 쓰는 파이썬 패키지 목록 (실험에 쓴 환경의 버전으로 고정). # 로 시작하는 줄은 pip가 무시함
+# 설치 순서: (1) torch, torchvision을 CUDA 버전에 맞춰 PyTorch 공식 안내로 먼저 설치 (이 환경: 2.14.1+cu126, 0.29.1+cu126)
+#            (2) pip install -r requirements.txt
+# torch를 먼저 설치하지 않으면 lpips가 의존성으로 PyPI의 기본 torch를 끌어와 설치한다
+numpy==2.5.3
+pillow==12.3.0
+matplotlib==3.11.2
+scipy==1.18.1
+scikit-image==0.26.0
+lpips==0.1.4
