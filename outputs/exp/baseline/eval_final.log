@@ -1,0 +1,39 @@
+D:\연구생\sr_patch_project\.venv\Lib\site-packages\torchvision\models\_utils.py:207: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+D:\연구생\sr_patch_project\.venv\Lib\site-packages\torchvision\models\_utils.py:222: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=AlexNet_Weights.IMAGENET1K_V1`. You can also use `weights=AlexNet_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [alex], v[0.1], spatial [off]
+Loading model from: D:\연구생\sr_patch_project\.venv\Lib\site-packages\lpips\weights\v0.1\alex.pth
+실험 baseline | 불러온 모델: ['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'B0', 'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'C0', 'C1', 'C2']
+[Set5] 5장 평가 완료
+[Set14] 14장 평가 완료
+[BSD100] 100장 평가 완료
+저장: D:\연구생\sr_patch_project\outputs\exp\baseline\results_final.csv
+
+== Set5 (5장) ==  PSNR·SSIM은 높을수록, LPIPS는 낮을수록 좋음
+방법                  PSNR(dB)                SSIM               LPIPS
+bicubic                28.43              0.8111              0.3397
+A (시드 10개)      29.69 ± 0.04     0.8425 ± 0.0011     0.2583 ± 0.0038
+B (시드 10개)      29.78 ± 0.04     0.8442 ± 0.0012     0.2482 ± 0.0030
+C (시드 3개)       29.51 ± 0.01     0.8375 ± 0.0005     0.2853 ± 0.0005
+
+== Set14 (14장) ==  PSNR·SSIM은 높을수록, LPIPS는 낮을수록 좋음
+방법                  PSNR(dB)                SSIM               LPIPS
+bicubic                26.09              0.7048              0.4386
+A (시드 10개)      26.97 ± 0.03     0.7386 ± 0.0006     0.3724 ± 0.0030
+B (시드 10개)      27.02 ± 0.03     0.7391 ± 0.0006     0.3643 ± 0.0036
+C (시드 3개)       26.84 ± 0.00     0.7342 ± 0.0003     0.3949 ± 0.0010
+
+== 전체 (19장) ==  PSNR·SSIM은 높을수록, LPIPS는 낮을수록 좋음
+방법                  PSNR(dB)                SSIM               LPIPS
+bicubic                26.71              0.7328              0.4125
+A (시드 10개)      27.69 ± 0.03     0.7659 ± 0.0007     0.3424 ± 0.0032
+B (시드 10개)      27.74 ± 0.03     0.7667 ± 0.0007     0.3337 ± 0.0034
+C (시드 3개)       27.54 ± 0.00     0.7614 ± 0.0003     0.3660 ± 0.0009
+
+== BSD100 (독립 확인) (100장) ==  PSNR·SSIM은 높을수록, LPIPS는 낮을수록 좋음
+방법                  PSNR(dB)                SSIM               LPIPS
+bicubic                25.96              0.6681              0.5243
+A (시드 10개)      26.55 ± 0.02     0.7003 ± 0.0007     0.4602 ± 0.0030
+B (시드 10개)      26.58 ± 0.01     0.7005 ± 0.0006     0.4546 ± 0.0030
+C (시드 3개)       26.47 ± 0.01     0.6960 ± 0.0002     0.4803 ± 0.0013

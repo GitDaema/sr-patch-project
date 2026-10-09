@@ -1,0 +1,17 @@
+실험 coh_strat | 조건 C | 시드 3 | 장치 cuda (NVIDIA GeForce RTX 3060 Ti)
+학습 전(= bicubic 입력): 평균 23.29 dB | 중앙값 23.57 dB
+   -> 02/03에서 본 이 그룹의 평균 PSNR_bic: 23.29 dB (위 평균과 같아야 정상)
+epoch   1/100  학습 MSE 0.006174  (1초)
+epoch  10/100  학습 MSE 0.005875  (6초)
+epoch  20/100  학습 MSE 0.005813  (12초)
+epoch  30/100  학습 MSE 0.005776  (18초)
+epoch  40/100  학습 MSE 0.005749  (24초)
+epoch  50/100  학습 MSE 0.005722  (30초)
+epoch  60/100  학습 MSE 0.005702  (36초)
+epoch  70/100  학습 MSE 0.005693  (42초)
+epoch  80/100  학습 MSE 0.005679  (48초)
+epoch  90/100  학습 MSE 0.005671  (54초)
+epoch 100/100  학습 MSE 0.005664  (60초)
+학습 후 (학습에 쓴 패치 기준): 평균 23.82 dB | 중앙값 24.11 dB
+   -> 단색 패치는 평균을 크게 흔들 수 있어 중앙값도 같이 봅니다. '학습 후 중앙값 > 학습 전 중앙값'이면 정상.
+저장: D:\연구생\sr_patch_project\outputs\exp\coh_strat\models\srcnn_C_seed3.pt
