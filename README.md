@@ -100,4 +100,4 @@ CODE_MAP.md        코드 구조와 수정 방법
 
 코드 구조는 [CODE_MAP.md](CODE_MAP.md)에 있습니다. 로그와 일부 출력은 옛 표기("구조/텍스처", `struct/texture`)를 쓰며, 각각 선·윤곽형/불규칙 무늬형과 같은 그룹입니다.
 
-**배경 논문**: 조선우, 정예진, 소재웅, 조남익 (2024). "Label-Free and Architecture-Agnostic Dataset Distillation for Single Image Super-Resolution."
+**배경 논문**: 조선우, 정예진, 조남익, 소재웅 (2025). "Dataset Distillation for Super-Resolution without Class Labels and Pre-trained Models." arXiv:2509.14777.

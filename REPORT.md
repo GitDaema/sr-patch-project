@@ -15,7 +15,7 @@
 
 ## 배경 논문
 
-조선우, 정예진, 소재웅, 조남익 (2024). "Label-Free and Architecture-Agnostic Dataset Distillation for Single Image Super-Resolution."
+조선우, 정예진, 조남익, 소재웅 (2025). "Dataset Distillation for Super-Resolution without Class Labels and Pre-trained Models." arXiv:2509.14777.
 
 논문은 패치 X를 bicubic으로 4배 축소했다가 다시 확대한 결과와 원본을 비교하는 점수로 디테일이 많은 패치를 고릅니다.
 
