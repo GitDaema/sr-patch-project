@@ -11,7 +11,7 @@ import config
 from srcnn import to_tensor
 from my_psnr import my_per_patch_psnr
 
-IS_AA_ON = False
+IS_AA_ON = True
 AFTER_DOWN_POST_MODE = 'round'
 AFTER_UP_POST_MODE = 'round'
 IS_AC_ON = False
@@ -29,11 +29,24 @@ def my_post_processing(patch_resized, post_mode = 'none'):
 
 def get_diff_info(name, patch_orig, patch_resized, scores):
     my_scores = my_per_patch_psnr(patch_orig, patch_resized)
-    score_diff = my_scores - torch.tensor(scores, device=my_scores.device)
-    same_scores = torch.isclose(score_diff, torch.tensor(0.0, dtype=score_diff.dtype), atol=1e-7)
+    t_scores = torch.tensor(scores, device=my_scores.device);
+    same_scores = torch.isclose(my_scores, t_scores, atol=1e-7)
     same_scores_count = same_scores.sum().item()
-    max_diff = score_diff.abs().max().item()
-    return (name, same_scores_count, max_diff)
+
+    if same_scores_count > 0:
+        same_values = my_scores[same_scores]
+        target = torch.tensor(148.1308, dtype=my_scores.dtype, device=my_scores.device)
+        print(same_values)
+        is_all_target = torch.isclose(same_values, target, atol=1e-4).all().item()
+    else:
+        is_all_target = False
+
+    score_diff = my_scores - t_scores
+    
+    score_diff_abs = score_diff.abs()
+    max_diff = score_diff_abs.max().item()
+    avg_diff = score_diff_abs.mean().item()
+    return (name, same_scores_count, is_all_target, max_diff, avg_diff)
 
 verification_dir = Path('verification/p02_split')
 verification_dir.mkdir(parents = True, exist_ok = True)
@@ -86,5 +99,6 @@ with open(file_path, "w", encoding="utf-8") as f:
         print("===================\n")
         print('앤티에일리어싱:', IS_AA_ON, '| align_corners:', IS_AC_ON,
             '| 축소 직후 처리:', AFTER_DOWN_POST_MODE, '| 확대 직후 처리:', AFTER_UP_POST_MODE)
-        lib, s_count, max_diff = diff_info 
-        print('라이브러리:', lib, '| 정답 수:', s_count, '| 최대 차이:', max_diff)
+        lib, s_count, is_all_min_psnr, max_diff, avg_diff = diff_info 
+        print('라이브러리:', lib, '| 정답 수:', s_count, '| 전부 하한값:', is_all_min_psnr)
+        print('최대 차이:', max_diff, '| 평균 절대 차이:', avg_diff)
