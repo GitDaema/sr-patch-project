@@ -59,23 +59,7 @@ def get_diff_info(name, patch_orig, patch_resized, scores):
     avg_diff = score_diff_abs.mean().item()
     return (name, same_scores_count, is_all_target, max_diff, avg_diff)
 
-verification_dir = Path('verification/p02_split')
-verification_dir.mkdir(parents = True, exist_ok = True)
-
-scores = np.load(config.OUT_DIR / 'scores.npy', mmap_mode='r')
-
-patches = np.load(config.OUT_DIR / "patches.npy", mmap_mode='r')
-patch_orig = to_tensor(patches)
-
-if LIB_MODE == 'torch':
-    patch_resized = F.interpolate(patch_orig, scale_factor = 0.25, mode = 'bicubic', 
-                                align_corners = IS_AC_ON, antialias = IS_AA_ON)
-    patch_resized = my_post_processing(patch_resized, AFTER_DOWN_POST_MODE)
-
-    patch_resized = F.interpolate(patch_resized, scale_factor = 4, mode = 'bicubic',
-                                align_corners = IS_AC_ON)
-    patch_resized = my_post_processing(patch_resized, AFTER_UP_POST_MODE)
-elif LIB_MODE == 'Pillow':
+def get_resized_patches_with_pillow(patches):
     N, H, W, C = patches.shape
     out_list = []
 
@@ -87,29 +71,49 @@ elif LIB_MODE == 'Pillow':
 
     patch_resized_uint8 = np.stack(out_list, axis=0)
 
-    patch_resized = torch.from_numpy(np.transpose(patch_resized_uint8, 
-                                    (0, 3, 1, 2)).astype(np.float32) / 255.0)
-else:
-    print('사전에 지정하지 않은 라이브러리 모드입니다.')
-    sys.exit()
+    return torch.from_numpy(np.transpose(patch_resized_uint8, 
+                            (0, 3, 1, 2)).astype(np.float32) / 255.0)
 
-diff_info = get_diff_info(LIB_MODE, patch_orig, patch_resized, scores)
-print(diff_info)
+if __name__ == '__main__':
+    verification_dir = Path('verification/p02_split')
+    verification_dir.mkdir(parents = True, exist_ok = True)
 
-time_stamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-file_name = f'{time_stamp}.txt'
-file_path = verification_dir/file_name
+    scores = np.load(config.OUT_DIR / 'scores.npy', mmap_mode='r')
 
-with open(file_path, "w", encoding="utf-8") as f:
-    with redirect_stdout(f):
-        print(f"Python: {sys.version}")
-        print(f"torch: {torch.__version__}")
-        print(f"Numpy: {np.__version__}")
-        print(f"Pillow: {PIL.__version__}")
-        print("===================\n")
-        if LIB_MODE == 'torch':
-            print('앤티에일리어싱:', IS_AA_ON, '| align_corners:', IS_AC_ON,
-                '| 축소 직후 처리:', AFTER_DOWN_POST_MODE, '| 확대 직후 처리:', AFTER_UP_POST_MODE)
-        lib, s_count, is_all_min_psnr, max_diff, avg_diff = diff_info 
-        print('라이브러리:', lib, '| 정답 수:', s_count, '| 전부 하한값:', is_all_min_psnr)
-        print('최대 차이:', max_diff, '| 평균 절대 차이:', avg_diff)
+    patches = np.load(config.OUT_DIR / "patches.npy", mmap_mode='r')
+    patch_orig = to_tensor(patches)
+
+    if LIB_MODE == 'torch':
+        patch_resized = F.interpolate(patch_orig, scale_factor = 0.25, mode = 'bicubic', 
+                                    align_corners = IS_AC_ON, antialias = IS_AA_ON)
+        patch_resized = my_post_processing(patch_resized, AFTER_DOWN_POST_MODE)
+
+        patch_resized = F.interpolate(patch_resized, scale_factor = 4, mode = 'bicubic',
+                                    align_corners = IS_AC_ON)
+        patch_resized = my_post_processing(patch_resized, AFTER_UP_POST_MODE)
+    elif LIB_MODE == 'Pillow':
+        patch_resized = get_resized_patches_with_pillow(patches)
+    else:
+        print('사전에 지정하지 않은 라이브러리 모드입니다.')
+        sys.exit()
+
+    diff_info = get_diff_info(LIB_MODE, patch_orig, patch_resized, scores)
+    print(diff_info)
+
+    time_stamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    file_name = f'{time_stamp}.txt'
+    file_path = verification_dir/file_name
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        with redirect_stdout(f):
+            print(f"Python: {sys.version}")
+            print(f"torch: {torch.__version__}")
+            print(f"Numpy: {np.__version__}")
+            print(f"Pillow: {PIL.__version__}")
+            print("===================\n")
+            if LIB_MODE == 'torch':
+                print('앤티에일리어싱:', IS_AA_ON, '| align_corners:', IS_AC_ON,
+                    '| 축소 직후 처리:', AFTER_DOWN_POST_MODE, '| 확대 직후 처리:', AFTER_UP_POST_MODE)
+            lib, s_count, is_all_min_psnr, max_diff, avg_diff = diff_info 
+            print('라이브러리:', lib, '| 정답 수:', s_count, '| 전부 하한값:', is_all_min_psnr)
+            print('최대 차이:', max_diff, '| 평균 절대 차이:', avg_diff)
