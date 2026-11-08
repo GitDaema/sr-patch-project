@@ -13,6 +13,12 @@ from srcnn import to_tensor
 from resize_and_check_psnr import get_resized_patches_with_pillow
 from my_psnr import my_per_patch_psnr
 
+def get_under_up_median_pools(pool, med):
+    return torch.nonzero(pool < med, as_tuple=True)[0], torch.nonzero(pool >= med, as_tuple=True)[0]    
+
+def check_same_pool(pool1, pool2):
+    return torch.equal(torch.sort(pool1.flatten())[0], torch.sort(pool2.flatten())[0])
+
 if __name__ == '__main__':
     verification_dir = Path('verification/p02_split')
     verification_dir.mkdir(parents = True, exist_ok = True)
@@ -31,6 +37,15 @@ if __name__ == '__main__':
 
     my_median_score = np.nanmedian(my_scores)
 
+    my_under_median_indexes, my_up_median_indexes = get_under_up_median_pools(my_scores, my_median_score)
+    
+    my_und_med_indexes_len = len(my_under_median_indexes)
+    my_up_med_indexes_len = len(my_up_median_indexes)
+
+    under_median_indexes, up_median_indexes = get_under_up_median_pools(torch.tensor(scores), median_score)
+
+    is_under_median_pools_same = check_same_pool(my_under_median_indexes, under_median_indexes)
+    is_up_median_pools_same = check_same_pool(my_up_median_indexes, up_median_indexes)
 
     time_stamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     file_name = f'{time_stamp}.txt'
@@ -51,4 +66,8 @@ if __name__ == '__main__':
             print('내 PSNR_bic 배열 모양 및 자료형:', my_scores.shape, my_scores.dtype)
             print('내 PSNR_bic 배열의 중앙값과 scores.npy 중앙값과의 차이:', 
                 abs(median_score - my_median_score))
-            
+            print('내 중앙값 미만 풀 크기:', my_und_med_indexes_len)
+            print('내 중앙값 이상 풀 크기:', my_up_med_indexes_len)
+            print('내 두 풀의 크기의 합  :', my_und_med_indexes_len + my_up_med_indexes_len)
+            print('나와 scores.npy의 중앙값 미만 풀의 구성원이 같은가?:', '예' if is_under_median_pools_same else '아니오')
+            print('나와 scores.npy의 중앙값 이상 풀의 구성원이 같은가?:', '예' if is_up_median_pools_same else '아니오')
